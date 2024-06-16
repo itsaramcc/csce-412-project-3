@@ -1,21 +1,58 @@
+/**
+ * @file loadbalancer.h
+ * @brief Header file for the LoadBalancer class.
+ */
+
+#ifndef LOADBALANCER_H
+#define LOADBALANCER_H
+
 #include "webserver.h"
 #include <queue>
 #include <sstream>
 
+/**
+ * @brief The LoadBalancer class manages multiple WebServer instances
+ *        and handles incoming requests.
+ */
 class LoadBalancer {
     private:
-        WebServer** webServers;
-        std::queue<request> requestQ;
-        int cyclesElapsed;
-        int numServers;
+        WebServer** webServers; ///< Array of pointers to WebServer instances
+        std::queue<request> requestQ; ///< Queue to store incoming requests
+        int cyclesElapsed; ///< Number of cycles elapsed
+        int numServers; ///< Number of WebServer instances
 
     public:
+        /**
+         * @brief Constructor to initialize the LoadBalancer with a given number of servers.
+         * @param numServers Number of WebServer instances to manage.
+         */
         LoadBalancer(int numServers);
+
+        /**
+         * @brief Destructor to clean up dynamically allocated resources.
+         */
         ~LoadBalancer();
+
+        /**
+         * @brief Creates a randomly generated request and adds it to the request queue.
+         */
         void createRequest();
+
+        /**
+         * @brief Assigns pending requests to available WebServer instances.
+         * @return 0 if request assigned successfully, -1 if no servers available.
+         */
         int assignRequest();
+
+        /**
+         * @brief Increments the cycles elapsed and processes requests on each server.
+         * @return The updated number of cycles elapsed.
+         */
         int incrementCycles();
 };
+
+#endif // LOADBALANCER_H
+
 
 LoadBalancer::LoadBalancer(int _numServers) {
     numServers = _numServers;
@@ -34,6 +71,10 @@ LoadBalancer::~LoadBalancer() {
     delete[] webServers;
 }
 
+/**
+ * @brief Generate a random IP address.
+ * @return A randomly generated IP address in the format "x.x.x.x".
+ */
 std::string generateRandomIP() {
     std::ostringstream ip;
     ip << (std::rand() % 256) << "."
