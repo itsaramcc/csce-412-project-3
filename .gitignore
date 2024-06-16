@@ -1,5 +1,4 @@
 loadbalancer
 *.o
 /.vscode
-/html
 *.txt
